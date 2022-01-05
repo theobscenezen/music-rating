@@ -14,7 +14,7 @@ import { RecordSeed } from '../seeds/record.seed';
     RecordSeed,
   ],
   imports: [
-    MongooseModule.forRoot(`mongodb://musicmongo:mus1cMong0p4ss@mongo.global/music-rating?authSource=admin`),
+    MongooseModule.forRoot(`mongodb://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@mongo.global/music-rating?authSource=admin`),
     MongooseModule.forFeature([
       {name: Round.name, schema: RoundSchema},
       {name: Record.name, schema: RecordSchema},
