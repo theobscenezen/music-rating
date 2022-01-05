@@ -2,12 +2,12 @@ export class VoteDTO {
   _id: any;
   createdAt: any;
   player: string = '';
-  lyrics: number = 2;
-  production: number = 2;
-  creativity: number = 2.5;
-  groove: number = 2;
-  underdogness: number = 2;
-  earworm: number = 2;
+  lyrics: number = 0;
+  production: number = 0;
+  creativity: number = 0;
+  groove: number = 0;
+  underdogness: number = 0;
+  earworm: number = 0;
   round: string = '';
 
   static fromData(data: any): VoteDTO {

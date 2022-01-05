@@ -3,7 +3,8 @@
     <loader></loader>
     <template v-if="submitted && !gameFinalized">
       <p class="text-center mt-3 mb-2">Bitte warte, während die anderen noch Voten...</p>
-      <p class="text-center mb-8">{{ currentRound.currentRecord.votes.length }} / {{ currentRound.playerCount }} Spieler haben bereits abgestimmt. ({{ playersVoted }})</p>
+      <p class="text-center mb-8">{{ currentRound.currentRecord.votes.length }} /
+        {{ currentRound.playerCount }} Spieler haben bereits abgestimmt. ({{ playersVoted }})</p>
 
       <div class="mx-4 mt-16">
         <h2>Deine Eingaben:</h2>
@@ -14,25 +15,31 @@
         >
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title>Kreativität: <strong>{{ voteDTO.creativity }}</strong></v-list-item-title>
-              <v-list-item-title>Ohrwurmfaktor: <strong>{{ voteDTO.earworm }}</strong></v-list-item-title>
+              <v-list-item-title>Kreativität: <strong>{{ voteDTO.creativity }}</strong>
+              </v-list-item-title>
+              <v-list-item-title>Ohrwurmfaktor: <strong>{{ voteDTO.earworm }}</strong>
+              </v-list-item-title>
               <v-list-item-title>Groove: <strong>{{ voteDTO.groove }}</strong></v-list-item-title>
               <v-list-item-title>Lyrics: <strong>{{ voteDTO.lyrics }}</strong></v-list-item-title>
-              <v-list-item-title>Produktion: <strong>{{ voteDTO.production }}</strong></v-list-item-title>
-              <v-list-item-title>Underdog-Faktor: <strong>{{ voteDTO.underdogness }}</strong></v-list-item-title>
+              <v-list-item-title>Produktion: <strong>{{ voteDTO.production }}</strong>
+              </v-list-item-title>
+              <v-list-item-title>Underdog-Faktor: <strong>{{ voteDTO.underdogness }}</strong>
+              </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-card>
       </div>
 
       <div class="ma-4 mt-16">
-      <v-text-field
-        v-model="newPlayerCount"
-        label="Anzahl Spieler"
-        type="number"
-        required
-      ></v-text-field>
-      <v-btn color="lighten-2" text @click="changePlayerCount" :disabled="newPlayerCount === 0">Spielerzahl ändern</v-btn>
+        <v-text-field
+          v-model="newPlayerCount"
+          label="Anzahl Spieler"
+          type="number"
+          required
+        ></v-text-field>
+        <v-btn color="lighten-2" text @click="changePlayerCount" :disabled="newPlayerCount === 0">
+          Spielerzahl ändern
+        </v-btn>
       </div>
     </template>
   </template>
@@ -53,56 +60,66 @@
 
       <v-card-title>Kreativität</v-card-title>
       <v-card-text>
-        <v-rating v-model="voteDTO.creativity" density="default" color="yellow" clearable half-increments/>
+        <v-rating v-model="voteDTO.creativity" density="default" color="yellow" clearable
+                  half-increments/>
       </v-card-text>
 
       <v-divider class="mx-4"></v-divider>
 
       <v-card-title>Ohrwurmfaktor</v-card-title>
       <v-card-text>
-        <v-rating v-model="voteDTO.earworm" density="default" color="yellow" clearable half-increments/>
+        <v-rating v-model="voteDTO.earworm" density="default" color="yellow" clearable
+                  half-increments/>
       </v-card-text>
 
       <v-divider class="mx-4"></v-divider>
 
       <v-card-title>Groove</v-card-title>
       <v-card-text>
-        <v-rating v-model="voteDTO.groove" density="default" color="yellow" clearable half-increments/>
+        <v-rating v-model="voteDTO.groove" density="default" color="yellow" clearable
+                  half-increments/>
       </v-card-text>
 
       <v-divider class="mx-4"></v-divider>
 
       <v-card-title>Lyrics</v-card-title>
       <v-card-text>
-        <v-rating v-model="voteDTO.lyrics" density="default" color="yellow" clearable half-increments/>
+        <v-rating v-model="voteDTO.lyrics" density="default" color="yellow" clearable
+                  half-increments/>
       </v-card-text>
 
       <v-divider class="mx-4"></v-divider>
 
       <v-card-title>Produktion</v-card-title>
       <v-card-text>
-        <v-rating v-model="voteDTO.production" density="default" color="yellow" clearable half-increments/>
+        <v-rating v-model="voteDTO.production" density="default" color="yellow" clearable
+                  half-increments/>
       </v-card-text>
 
       <v-divider class="mx-4"></v-divider>
 
       <v-card-title>Underdog-Faktor</v-card-title>
       <v-card-text>
-        <v-rating v-model="voteDTO.underdogness" density="default" color="yellow" clearable half-increments/>
+        <v-rating v-model="voteDTO.underdogness" density="default" color="yellow" clearable
+                  half-increments/>
       </v-card-text>
 
       <v-card-actions>
-        <v-btn color="deep-purple lighten-2" text :disabled="!voteDTO.isValid" @click="submitVote">Abstimmen</v-btn>
+        <v-btn color="deep-purple lighten-2" text :disabled="!voteDTO.isValid" @click="submitVote">
+          Abstimmen
+        </v-btn>
       </v-card-actions>
     </v-card>
   </template>
   <template v-else>
     <h2>Abschlussstatistiken</h2>
+    <canvas id="finalResults" ref="finalResults" width="400" height="400"></canvas>
   </template>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { Chart, ChartItem } from 'chart.js';
 import VuexObjectMixin from '@/mixins/VuexObjectMixin';
 import { VoteDTO } from '@/dto/VoteDTO';
 
@@ -125,7 +142,7 @@ export default defineComponent({
   methods: {
     async fetchCurrentRound() {
       this.loading = true;
-      const { roundId } = this.$route.params;
+      const {roundId} = this.$route.params;
       await this.$store.dispatch('fetchRound', roundId);
       this.loading = false;
     },
@@ -188,12 +205,76 @@ export default defineComponent({
       clearInterval(this.polling);
     },
     async changePlayerCount() {
-      await this.restClient.POST(`/api/rounds/${this.currentRound?._id}`, { _id: this.currentRound._id, playerCount: this.newPlayerCount });
+      await this.restClient.POST(`/api/rounds/${this.currentRound?._id}`, {
+        _id: this.currentRound._id,
+        playerCount: this.newPlayerCount,
+      });
     },
     async showStats() {
       const results = await this.restClient.GET(`/api/rounds/${this.currentRound?._id}/stats`);
+      const labels: any = [];
+      const data: any = [];
+      const bgColors: any = [];
+      const borderColors: any = [];
+      results.response.forEach((result: any) => {
+        labels.push(result.artist);
+        const color = this.randomRgba();
+        bgColors.push(color.bg);
+        borderColors.push(color.border);
+        data.push(this.calculateValues(result.votes));
+      });
+      const canvasEl = (this.$refs.finalResults as HTMLCanvasElement);
+      const ctx = (canvasEl.getContext('2d') as ChartItem);
+      if (ctx) {
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [{
+              label: '# of Votes',
+              data,
+              backgroundColor: bgColors,
+              borderColor: borderColors,
+              borderWidth: 1,
+            }],
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      }
       this.loading = false;
     },
+    randomRgba(): any {
+      const o = Math.round;
+      const r = Math.random;
+      const s = 255;
+      const red = o(r() * s);
+      const g = o(r() * s);
+      const b = o(r() * s);
+      return {
+        bg: `rgba(${red},${g},${b},0.2)`,
+        border: `rgba(${red},${g},${b},1)`,
+      };
+    },
+    calculateValues(votes: Array<VoteDTO>): number {
+      const resultVote = new VoteDTO();
+
+      votes.forEach((vote) => {
+        resultVote.lyrics += vote.lyrics;
+        resultVote.production += vote.production;
+        resultVote.earworm += vote.earworm;
+        resultVote.underdogness = vote.underdogness;
+        resultVote.groove = vote.groove;
+        resultVote.creativity = vote.creativity;
+      });
+
+      return (resultVote.lyrics) + (resultVote.production) + (resultVote.earworm) + (resultVote.underdogness) + (resultVote.groove) + (resultVote.creativity);
+    }
   },
   beforeUnmount() {
     this.endPolling();
@@ -202,7 +283,7 @@ export default defineComponent({
     playersVoted(): string {
       const votedPlayers = this.currentRound?.currentRecord?.votes.map((v: VoteDTO) => v.player);
       return votedPlayers.join(', ');
-    }
-  }
+    },
+  },
 });
 </script>

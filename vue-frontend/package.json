@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@mdi/font": "5.9.55",
+    "chart.js": "^3.7.0",
     "core-js": "^3.6.5",
     "roboto-fontface": "*",
     "vue": "^3.0.0",
@@ -64,7 +65,9 @@
       "lines-between-class-members": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/explicit-module-boundary-types": "off",
-      "@typescript-eslint/no-inferrable-types": "off"
+      "@typescript-eslint/no-inferrable-types": "off",
+      "object-curly-spacing": "off",
+      "no-new": "off"
     }
   },
   "browserslist": [
