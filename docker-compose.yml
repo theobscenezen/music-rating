@@ -1,0 +1,43 @@
+version: '3.7'
+
+services:
+  mongo:
+    image: mongo
+    restart: unless-stopped
+    expose:
+      - 27017
+#    ports:
+#      - 27017:27017
+    volumes:
+      - .docker/mongo:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+
+  node:
+    image: node:lts
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+    working_dir: /app
+    depends_on:
+      - mongo
+    expose:
+      - 3000
+#    ports:
+#      - 8080:8080
+    environment:
+      - VIRTUAL_PORT=3000
+      - VIRTUAL_HOST=${VIRTUAL_HOST}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}
+      # Don't forget to connect via bash start.sh
+      - APPLICATION_UID=${APPLICATION_UID:-1000}
+      - APPLICATION_GID=${APPLICATION_GID:-1000}
+    stop_signal: SIGKILL
+    entrypoint: bash -c 'groupmod -g $$APPLICATION_GID node; usermod -u $$APPLICATION_UID node; yarn global add @nestjs/cli; yarn global add @vue/cli; tail -f /dev/null'
+
+networks:
+  default:
+    external:
+      name: global
